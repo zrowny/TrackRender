@@ -23,31 +23,31 @@ jobs:
       PLATFORM: ${{ matrix.platform }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
       - name: Checkout libIsoRender
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
         with:
           repository: 'X123M3-256/libIsoRender'
           path: 'libIsoRender'
       - name: Checkout libImage
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
         with:
           repository: 'X123M3-256/libImage'
           path: 'libIsoRender/libImage'
       - name: Install vcpkg and packages
-        uses: lukka/run-vcpkg@v2
+        uses: lukka/run-vcpkg@v7.3
         id: runvcpkg
         with:
           vcpkgGitCommitId: 2f7a104d4d6f1f3790db929f85a4086aa6973d7f
           vcpkgTriplet: '${{ matrix.triplet }}'
           vcpkgArguments: '${{ matrix.vcpkgPackages }}'
       - name: Upload libs
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.2.3
         with:
           name: libs-${{ matrix.triplet }}
           path: ${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}\\installed\\${{ matrix.triplet }}
       - name: 'Build with CMake'
-        uses: lukka/run-cmake@v2
+        uses: lukka/run-cmake@v3.4
         with:
           cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
           useVcpkgToolchainFile: true
@@ -58,12 +58,12 @@ jobs:
           cmakeGenerator: ${{ matrix.generator }}
           buildWithCMakeArgs: '--config Release -j 2'
       - name: Upload binary
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.2.3
         with:
           name: bin-${{ matrix.triplet }}
           path: '${{ runner.workspace }}/build/**/*.exe'
       - name: Upload binary (libs)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.2.3
         with:
           name: bin-${{ matrix.triplet }}
           path: '${{ runner.workspace }}/build/**/*.dll'
